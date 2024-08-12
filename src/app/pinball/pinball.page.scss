@@ -1,0 +1,15 @@
+.add-button {
+    background-color: green !important;
+    color: white !important; // Ensure button text is white
+  }
+  
+  .disabled-button {
+    background-color: lightgrey !important;
+    color: white !important;
+    cursor: not-allowed;
+  }
+  
+  .plus-icon {
+    color: black !important; // Ensures the plus icon is black
+    font-size: 1.2em; // Adjust size as needed
+  }

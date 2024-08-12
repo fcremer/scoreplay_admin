@@ -9,10 +9,44 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">pinball</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    (ionInput)="onSearchChange($event)"
+    placeholder="Search Pinball Machines"
+    debounce="250">
+  </ion-searchbar>
+
+  <ion-list *ngIf="searchResults.length > 0">
+    <ion-item *ngFor="let machine of searchResults">
+      <ion-label>
+        <h2>{{ machine.name }}</h2>
+        <p>Short Name: {{ machine.shortname || 'N/A' }}</p>
+        <p>Manufacture Date: {{ machine.manufacture_date | date:'mediumDate' }}</p>
+      </ion-label>
+      <ion-button
+        slot="end"
+        [disabled]="machine.added"
+        (click)="addMachine(machine)"
+        [ngClass]="{'add-button': !machine.added, 'disabled-button': machine.added}"
+        fill="solid"
+      >
+        <ion-icon name="add" class="plus-icon"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <ion-card *ngIf="searchResults.length === 0 && searchTerm.length > 1">
+    <ion-card-content>
+      No results found.
+    </ion-card-content>
+  </ion-card>
+
+  <ion-text color="success" *ngIf="successMessage">
+    <p>{{ successMessage }}</p>
+  </ion-text>
+
+  <ion-text color="danger" *ngIf="errorMessage">
+    <p>{{ errorMessage }}</p>
+  </ion-text>
 </ion-content>
