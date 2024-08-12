@@ -65,9 +65,14 @@ export class PinballService {
     return this.http.get<Player[]>(`${this.baseUrl}/players`);
   }
 
-  // Add this method
   deleteScore(pinballAbbreviation: string, playerAbbreviation: string, scoreValue: number): Observable<any> {
     const url = `${this.baseUrl}/delete_score/${pinballAbbreviation}/${playerAbbreviation}/${scoreValue}`;
     return this.http.delete(url);
+  }
+
+  addPlayer(name: string, abbreviation: string): Observable<any> {
+    const url = `${this.baseUrl}/player`;
+    const body = { name, abbreviation };
+    return this.http.post(url, body);
   }
 }

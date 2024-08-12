@@ -1,15 +1,61 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { PinballService } from '../services/pinball.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-player',
   templateUrl: './player.page.html',
   styleUrls: ['./player.page.scss'],
 })
-export class PlayerPage implements OnInit {
+export class PlayerPage {
+  firstName: string = '';
+  lastName: string = '';
+  isGuest: boolean = false;
+  errorMessage: string = '';
+  successMessage: string = '';
 
-  constructor() { }
+  constructor(
+    private pinballService: PinballService,
+    private alertController: AlertController
+  ) {}
 
-  ngOnInit() {
+  submitForm() {
+    const abbreviation = this.generateAbbreviation(this.firstName, this.lastName);
+    const playerName = `${this.firstName} ${this.lastName}`;
+
+    this.pinballService.addPlayer(playerName, abbreviation).subscribe(
+      () => {
+        this.successMessage = 'Player added successfully.';
+        this.clearForm();
+      },
+      (error: any) => {
+        console.error('Failed to add player:', error);
+        this.errorMessage = 'Failed to add player. Please try again later.';
+      }
+    );
   }
 
+  generateAbbreviation(firstName: string, lastName: string): string {
+    const firstChar = firstName.charAt(0).toUpperCase();
+    const secondChar = lastName.charAt(0).toUpperCase();
+    const checksum = this.calculateChecksum(firstName, lastName);
+    return `${firstChar}${secondChar}${checksum}`;
+  }
+
+  calculateChecksum(firstName: string, lastName: string): string {
+    const sumFirstName = this.asciiSum(firstName);
+    const sumLastName = this.asciiSum(lastName);
+    return ((sumFirstName + sumLastName) % 100).toString().padStart(2, '0');
+  }
+
+  asciiSum(str: string): number {
+    return str.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  }
+
+  clearForm() {
+    this.firstName = '';
+    this.lastName = '';
+    this.isGuest = false;
+    this.errorMessage = '';
+  }
 }

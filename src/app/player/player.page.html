@@ -1,13 +1,49 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>player</ion-title>
+    <ion-title>Add Player</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">player</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <form (ngSubmit)="submitForm()">
+    <ion-item>
+      <ion-label position="stacked">First Name</ion-label>
+      <ion-input
+        [(ngModel)]="firstName"
+        name="firstName"
+        type="text"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Last Name</ion-label>
+      <ion-input
+        [(ngModel)]="lastName"
+        name="lastName"
+        type="text"
+        required
+      ></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Guest</ion-label>
+      <ion-checkbox
+        [(ngModel)]="isGuest"
+        name="isGuest"
+      ></ion-checkbox>
+    </ion-item>
+
+    <ion-button expand="full" type="submit" color="primary">
+      Submit
+    </ion-button>
+  </form>
+
+  <ion-text color="danger" *ngIf="errorMessage">
+    <p>{{ errorMessage }}</p>
+  </ion-text>
+
+  <ion-text color="success" *ngIf="successMessage">
+    <p>{{ successMessage }}</p>
+  </ion-text>
 </ion-content>
