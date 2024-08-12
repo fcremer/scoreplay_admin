@@ -5,6 +5,18 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
+  },
+  {
+    path: 'scores',
+    loadChildren: () => import('./scores/scores.module').then( m => m.ScoresPageModule)
+  },
+  {
+    path: 'player',
+    loadChildren: () => import('./player/player.module').then( m => m.PlayerPageModule)
+  },
+  {
+    path: 'pinball',
+    loadChildren: () => import('./pinball/pinball.module').then( m => m.PinballPageModule)
   }
 ];
 @NgModule({

@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Scores</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Search Bar -->
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    (ionInput)="filterPinballMachines()"
+    placeholder="Search Pinball Machines"
+    debounce="250">
+  </ion-searchbar>
+
+  <!-- Error Message Display -->
+  <ion-card *ngIf="errorMessage">
+    <ion-card-content>
+      {{ errorMessage }}
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Display Filtered Pinball Machines -->
+  <ng-container *ngFor="let machine of filteredPinballMachines">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ machine.long_name }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col><strong>Player</strong></ion-col>
+            <ion-col><strong>Score</strong></ion-col>
+            <ion-col><strong>Action</strong></ion-col>
+          </ion-row>
+          <ion-row *ngFor="let score of scoresByMachine[machine.abbreviation]">
+            <ion-col>{{ score.player_abbreviation }}</ion-col>
+            <ion-col>{{ score.points | number }}</ion-col>
+            <ion-col>
+              <ion-button color="danger" (click)="confirmDelete(score)">
+                Delete
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </ng-container>
+</ion-content>
