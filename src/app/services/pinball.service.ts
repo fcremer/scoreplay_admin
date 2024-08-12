@@ -10,11 +10,15 @@ export interface PinballMachine {
 }
 
 export interface Score {
-  id: string; // Assuming each score has a unique identifier for UI, not used in deletion
   date: string;
   pinball_abbreviation: string;
   player_abbreviation: string;
   points: number;
+}
+
+export interface Player {
+  abbreviation: string;
+  name: string;
 }
 
 @Injectable({
@@ -57,6 +61,11 @@ export class PinballService {
     );
   }
 
+  getPlayers(): Observable<Player[]> {
+    return this.http.get<Player[]>(`${this.baseUrl}/players`);
+  }
+
+  // Add this method
   deleteScore(pinballAbbreviation: string, playerAbbreviation: string, scoreValue: number): Observable<any> {
     const url = `${this.baseUrl}/delete_score/${pinballAbbreviation}/${playerAbbreviation}/${scoreValue}`;
     return this.http.delete(url);

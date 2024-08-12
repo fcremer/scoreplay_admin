@@ -44,7 +44,7 @@
             <ion-col><strong>Action</strong></ion-col>
           </ion-row>
           <ion-row *ngFor="let score of scoresByMachine[machine.abbreviation]">
-            <ion-col>{{ score.player_abbreviation }}</ion-col>
+            <ion-col>{{ getPlayerName(score.player_abbreviation) }}</ion-col>
             <ion-col>{{ score.points | number }}</ion-col>
             <ion-col>
               <ion-button color="danger" (click)="confirmDelete(score)">

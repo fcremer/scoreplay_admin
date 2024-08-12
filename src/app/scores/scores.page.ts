@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PinballService, PinballMachine, Score } from '../services/pinball.service';
+import { PinballService, PinballMachine, Score, Player } from '../services/pinball.service';
 import { AlertController } from '@ionic/angular';
 
 @Component({
@@ -11,6 +11,7 @@ export class ScoresPage implements OnInit {
   pinballMachines: PinballMachine[] = [];
   filteredPinballMachines: PinballMachine[] = [];
   scoresByMachine: { [key: string]: Score[] } = {};
+  playerMap: { [key: string]: string } = {}; // Map player abbreviation to full name
   searchTerm: string = '';
   errorMessage: string = '';
 
@@ -20,16 +21,32 @@ export class ScoresPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadPinballMachines();
+    this.loadPlayers();
+  }
+
+  loadPlayers() {
+    this.pinballService.getPlayers().subscribe(
+      (data: Player[]) => {
+        this.playerMap = data.reduce((map: { [key: string]: string }, player: Player) => {
+          map[player.abbreviation] = player.name;
+          return map;
+        }, {});
+        this.loadPinballMachines(); // Load pinball machines after loading players
+      },
+      (error: any) => {
+        this.errorMessage = 'Could not load players. Please try again later.';
+        console.error('Failed to load players:', error);
+      }
+    );
   }
 
   loadPinballMachines() {
     this.pinballService.getPinballMachines().subscribe(
-      (data) => {
+      (data: PinballMachine[]) => {
         this.pinballMachines = data;
         this.loadScores();
       },
-      (error) => {
+      (error: any) => {
         this.errorMessage = 'Could not load pinball machines. Please try again later.';
         console.error('Failed to load pinball machines:', error);
       }
@@ -38,11 +55,11 @@ export class ScoresPage implements OnInit {
 
   loadScores() {
     this.pinballService.getAllScoresForToday().subscribe(
-      (data) => {
+      (data: { [key: string]: Score[] }) => {
         this.scoresByMachine = data;
         this.filterPinballMachines(); // Initial filter based on scores
       },
-      (error) => {
+      (error: any) => {
         this.errorMessage = 'Could not load scores. Please try again later.';
         console.error('Failed to load scores:', error);
       }
@@ -58,10 +75,14 @@ export class ScoresPage implements OnInit {
     });
   }
 
+  getPlayerName(abbreviation: string): string {
+    return this.playerMap[abbreviation] || abbreviation;
+  }
+
   async confirmDelete(score: Score) {
     const alert = await this.alertController.create({
       header: 'Confirm Delete',
-      message: `Are you sure you want to delete the score for ${score.player_abbreviation} with ${score.points} points?`,
+      message: `Are you sure you want to delete the score for ${this.getPlayerName(score.player_abbreviation)} with ${score.points} points?`,
       buttons: [
         {
           text: 'Cancel',
@@ -85,7 +106,7 @@ export class ScoresPage implements OnInit {
         this.loadScores(); // Refresh scores after deletion
         this.showAlert('Success', 'Score deleted successfully.');
       },
-      (error) => {
+      (error: any) => {
         console.error('Failed to delete score:', error);
         this.showAlert('Error', 'Failed to delete score. Please try again later.');
       }
