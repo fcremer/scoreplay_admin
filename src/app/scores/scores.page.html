@@ -20,6 +20,16 @@
     </ion-card-content>
   </ion-card>
 
+  <!-- Waiting for Scores Message -->
+  <ion-card *ngIf="!errorMessage && filteredPinballMachines.length === 0" class="no-scores-message">
+    <ion-card-content>
+      <div class="centered-content">
+        <ion-icon name="sad-outline" class="sad-icon"></ion-icon>
+        <p>Waiting for scores</p>
+      </div>
+    </ion-card-content>
+  </ion-card>
+
   <!-- Display Filtered Pinball Machines -->
   <ng-container *ngFor="let machine of filteredPinballMachines">
     <ion-card>

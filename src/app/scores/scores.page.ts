@@ -27,7 +27,6 @@ export class ScoresPage implements OnInit {
     this.pinballService.getPinballMachines().subscribe(
       (data) => {
         this.pinballMachines = data;
-        this.filteredPinballMachines = data; // Initialize filtered machines with all machines
         this.loadScores();
       },
       (error) => {
@@ -41,6 +40,7 @@ export class ScoresPage implements OnInit {
     this.pinballService.getAllScoresForToday().subscribe(
       (data) => {
         this.scoresByMachine = data;
+        this.filterPinballMachines(); // Initial filter based on scores
       },
       (error) => {
         this.errorMessage = 'Could not load scores. Please try again later.';
@@ -51,9 +51,11 @@ export class ScoresPage implements OnInit {
 
   filterPinballMachines() {
     const searchTermLower = this.searchTerm.toLowerCase();
-    this.filteredPinballMachines = this.pinballMachines.filter((machine) =>
-      machine.long_name.toLowerCase().includes(searchTermLower)
-    );
+    this.filteredPinballMachines = this.pinballMachines.filter((machine) => {
+      const hasScores = this.scoresByMachine[machine.abbreviation] && this.scoresByMachine[machine.abbreviation].length > 0;
+      const matchesSearchTerm = machine.long_name.toLowerCase().includes(searchTermLower);
+      return hasScores && matchesSearchTerm;
+    });
   }
 
   async confirmDelete(score: Score) {
