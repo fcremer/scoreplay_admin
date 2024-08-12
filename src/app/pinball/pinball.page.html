@@ -21,6 +21,7 @@
     <ion-item *ngFor="let machine of searchResults">
       <ion-label>
         <h2>{{ machine.name }}</h2>
+        <p>Manufacturer: {{ machine.manufacturer.name || 'Unknown' }}</p>
         <p>Short Name: {{ machine.shortname || 'N/A' }}</p>
         <p>Manufacture Date: {{ machine.manufacture_date | date:'mediumDate' }}</p>
       </ion-label>
