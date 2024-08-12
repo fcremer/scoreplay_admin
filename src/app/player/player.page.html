@@ -1,6 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Add Player</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon name="construct-outline" class="maintenance-icon"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -31,6 +36,7 @@
       <ion-checkbox
         [(ngModel)]="isGuest"
         name="isGuest"
+        [disabled]="true"
       ></ion-checkbox>
     </ion-item>
 
