@@ -1,0 +1,10 @@
+{
+  "name": "Aixplay Admin",
+  "short_name": "Aixplay Admin",
+  "description": "A progressive web app built with Ionic.",
+  "start_url": "/tabs/scores",
+  "display": "standalone",
+  "orientation": "portrait",
+  "related_applications": [],
+  "prefer_related_applications": false
+}

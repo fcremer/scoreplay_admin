@@ -1,0 +1,47 @@
+.pin-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100
+}
+  
+  .pin-dots {
+    margin-bottom: 20px;
+  }
+  
+  ion-icon {
+    font-size: 2em;
+    margin: 0 5px;
+  }
+  
+  .number-pad {
+    width: 240px; // Adjust width for consistency with iPhone layout
+  }
+  
+  ion-button.number-button {
+    --background: white;
+    --color: var(--ion-color-primary); // Use accent color for text
+    --border-radius: 50%;
+    --border-width: 1px;
+    --border-style: solid;
+    --border-color: var(--ion-color-primary); // Use accent color for border
+    height: 60px;
+    width: 60px;
+    margin: 10px;
+    font-size: 1.5em;
+  }
+  
+  ion-button:focus {
+    outline: none; // Remove focus outline on click
+  }
+  
+  ion-button:active {
+    --background: var(--ion-color-light); // Slightly change background on click
+  }
+  
+  ion-button.clear {
+    --background: var(--ion-color-danger); // Different color for clear button
+    --color: white;
+    margin-top: 20px;
+  }

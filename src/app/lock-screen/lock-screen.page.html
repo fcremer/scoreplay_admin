@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Enter PIN</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="pin-container">
+    <div class="pin-dots">
+      <span *ngFor="let _ of [0, 1, 2, 3]">
+        <ion-icon
+          name="ellipse"
+          [style.color]="enteredPin.length > _ ? 'black' : 'lightgrey'"
+        ></ion-icon>
+      </span>
+    </div>
+
+    <div class="number-pad">
+      <div *ngFor="let row of [['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9'], ['0']]">
+        <ion-row>
+          <ion-col *ngFor="let num of row">
+            <ion-button (click)="onNumberClick(num)" expand="block">{{ num }}</ion-button>
+          </ion-col>
+        </ion-row>
+      </div>
+      <ion-button color="danger" (click)="clearPin()" expand="block">Clear</ion-button>
+    </div>
+  </div>
+</ion-content>
