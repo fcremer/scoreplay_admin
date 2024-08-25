@@ -103,18 +103,13 @@ export class PinballPage implements OnInit {
       abbreviation: machine.shortname || 'N/A',
       room: '1'
     };
-  
+
     this.http.post(this.addApiUrl, payload).subscribe(
       () => {
         machine.added = true;
         this.successMessage = `Successfully added ${machine.name}.`;
         this.errorMessage = '';
-  
-        // Add the newly added machine to the existingPinballs array
         this.existingPinballs.push({ abbreviation: machine.shortname || 'N/A', long_name: machine.name, room: '1' });
-  
-        // Alternatively, reload the existing pinballs (if server consistency is critical)
-        // this.loadExistingPinballs();
       },
       (error) => {
         console.error('Failed to add machine:', error);
@@ -123,6 +118,7 @@ export class PinballPage implements OnInit {
       }
     );
   }
+
   generateRandomAbbreviation(): string {
     return Math.random().toString(36).substr(2, 3).toUpperCase(); // Generate a random 3-character string
   }
