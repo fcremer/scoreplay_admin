@@ -51,6 +51,7 @@ export class PlayerPage implements OnInit {
 
     this.pinballService.addPlayer(playerName, abbreviation, this.isGuest).subscribe(
       () => {
+        this.loadPlayers(); 
         this.successMessage = 'Player added successfully.';
         this.clearForm();
         this.loadPlayers();  // Reload the players after adding a new one
