@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Add Player</ion-title>
+    <ion-title>Manage Players</ion-title>
     <ion-buttons slot="end">
       <ion-button>
         <ion-icon name="construct-outline" class="maintenance-icon"></ion-icon>
@@ -10,45 +10,69 @@
 </ion-header>
 
 <ion-content>
-  <form (ngSubmit)="submitForm()">
-    <ion-item>
-      <ion-label position="stacked">First Name</ion-label>
-      <ion-input
-        [(ngModel)]="firstName"
-        name="firstName"
-        type="text"
-        required
-      ></ion-input>
+  <!-- Add Player Form - Keep this at the top -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Add Player</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form (ngSubmit)="submitForm()">
+        <ion-item>
+          <ion-label position="stacked">First Name</ion-label>
+          <ion-input
+            [(ngModel)]="firstName"
+            name="firstName"
+            type="text"
+            required
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Last Name</ion-label>
+          <ion-input
+            [(ngModel)]="lastName"
+            name="lastName"
+            type="text"
+            required
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Guest</ion-label>
+          <ion-checkbox
+            [(ngModel)]="isGuest"
+            name="isGuest"
+          ></ion-checkbox>
+        </ion-item>
+
+        <ion-button expand="full" type="submit" color="primary">
+          Submit
+        </ion-button>
+      </form>
+
+      <ion-text color="danger" *ngIf="errorMessage">
+        <p>{{ errorMessage }}</p>
+      </ion-text>
+
+      <ion-text color="success" *ngIf="successMessage">
+        <p>{{ successMessage }}</p>
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Search Players -->
+  <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="filterPlayers()" placeholder="Search Players"></ion-searchbar>
+
+  <!-- Player List -->
+  <ion-list>
+    <ion-item *ngFor="let player of filteredPlayers">
+      <ion-label>
+        {{ player.name }}
+        <ion-note *ngIf="player.guest" color="medium"> (Guest)</ion-note>
+      </ion-label>
+      <ion-button fill="clear" slot="end" color="danger" (click)="deletePlayer(player.abbreviation)">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
     </ion-item>
-
-    <ion-item>
-      <ion-label position="stacked">Last Name</ion-label>
-      <ion-input
-        [(ngModel)]="lastName"
-        name="lastName"
-        type="text"
-        required
-      ></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label>Guest</ion-label>
-      <ion-checkbox
-        [(ngModel)]="isGuest"
-        name="isGuest"
-      ></ion-checkbox>  <!-- Removed the disabled attribute -->
-    </ion-item>
-
-    <ion-button expand="full" type="submit" color="primary">
-      Submit
-    </ion-button>
-  </form>
-
-  <ion-text color="danger" *ngIf="errorMessage">
-    <p>{{ errorMessage }}</p>
-  </ion-text>
-
-  <ion-text color="success" *ngIf="successMessage">
-    <p>{{ successMessage }}</p>
-  </ion-text>
+  </ion-list>
 </ion-content>

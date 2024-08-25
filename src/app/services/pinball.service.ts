@@ -28,7 +28,6 @@ export interface Player {
 })
 export class PinballService {
   private baseUrl = 'https://backend.aixplay.aixtraball.de';
-//  private baseUrl = 'http://localhost:5000';
 
   constructor(private http: HttpClient) {}
 
@@ -68,6 +67,11 @@ export class PinballService {
     return this.http.get<Player[]>(`${this.baseUrl}/players`);
   }
 
+  deletePlayer(abbreviation: string): Observable<any> {
+    const url = `${this.baseUrl}/player/${abbreviation}`;
+    return this.http.delete(url);
+  }
+
   deleteScore(pinballAbbreviation: string, playerAbbreviation: string, scoreValue: number): Observable<any> {
     const url = `${this.baseUrl}/delete_score/${pinballAbbreviation}/${playerAbbreviation}/${scoreValue}`;
     return this.http.delete(url);
@@ -75,7 +79,7 @@ export class PinballService {
 
   addPlayer(name: string, abbreviation: string, guest: boolean = false): Observable<any> {
     const url = `${this.baseUrl}/player`;
-    const body = { name, abbreviation, guest };  // Include guest in the body
+    const body = { name, abbreviation, guest };
     return this.http.post(url, body);
   }
 }
