@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { PinballService, PinballMachine } from '../services/pinball.service';
+import { AlertController } from '@ionic/angular';
 
 interface Machine {
   opdb_id: string;
@@ -33,8 +34,13 @@ export class PinballPage implements OnInit {
   errorMessage: string = '';
   private searchApiUrl = 'https://opdb.org/api/search';
   private addApiUrl = 'https://backend.aixplay.aixtraball.de/pinball';
+  private deleteApiUrl = 'https://backend.aixplay.aixtraball.de/pinball'; // Base URL for DELETE API
 
-  constructor(private http: HttpClient, private pinballService: PinballService) {}
+  constructor(
+    private http: HttpClient,
+    private pinballService: PinballService,
+    private alertController: AlertController
+  ) {}
 
   ngOnInit() {
     this.loadExistingPinballs();
@@ -115,6 +121,57 @@ export class PinballPage implements OnInit {
         console.error('Failed to add machine:', error);
         this.errorMessage = `Failed to add ${machine.name}. Please try again later.`;
         this.successMessage = '';
+      }
+    );
+  }
+
+  async confirmDeletePinball(pinball: PinballMachine) {
+    const showError = async (errorMessage: string) => {
+      const alert = await this.alertController.create({
+        header: 'Confirm Delete',
+        message: `${errorMessage}Are you sure you want to delete the pinball machine ${pinball.abbreviation}and all related scores? Please type the abbreviation ${pinball.abbreviation} to confirm.`,
+        inputs: [
+          {
+            name: 'confirmation',
+            type: 'text',
+            placeholder: 'Enter abbreviation',
+          },
+        ],
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+          },
+          {
+            text: 'Delete',
+            handler: (data) => {
+              if (data.confirmation === pinball.abbreviation) {
+                this.deletePinball(pinball.abbreviation);
+              } else {
+                this.errorMessage = 'Abbreviation did not match. Deletion cancelled.';
+                showError(`${this.errorMessage}`);
+              }
+            },
+          },
+        ],
+      });
+  
+      await alert.present();
+    };
+  
+    await showError(''); // Show the initial alert without any error message
+  }
+
+  deletePinball(abbreviation: string) {
+    const url = `${this.deleteApiUrl}/${abbreviation}`;
+    this.http.delete(url).subscribe(
+      () => {
+        this.successMessage = `Successfully deleted pinball machine ${abbreviation}.`;
+        this.loadExistingPinballs(); // Reload the list of pinballs
+      },
+      (error) => {
+        console.error('Failed to delete pinball machine:', error);
+        this.errorMessage = 'Failed to delete pinball machine. Please try again later.';
       }
     );
   }
