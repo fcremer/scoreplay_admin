@@ -25,7 +25,7 @@ export interface Player {
   providedIn: 'root',
 })
 export class PinballService {
-  private baseUrl = 'https://liga.aixtraball.de';
+  private baseUrl = 'https://backend.aixplay.aixtraball.de';
 
   constructor(private http: HttpClient) {}
 
