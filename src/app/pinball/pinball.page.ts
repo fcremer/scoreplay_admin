@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { PinballService, PinballMachine } from '../services/pinball.service';
 
-// Define the interface for a machine
 interface Machine {
   opdb_id: string;
   is_machine: boolean;
@@ -25,22 +25,48 @@ interface Machine {
   templateUrl: './pinball.page.html',
   styleUrls: ['./pinball.page.scss'],
 })
-export class PinballPage {
+export class PinballPage implements OnInit {
   searchTerm: string = '';
   searchResults: Machine[] = [];
+  existingPinballs: PinballMachine[] = [];
   successMessage: string = '';
   errorMessage: string = '';
   private searchApiUrl = 'https://opdb.org/api/search';
-  private addApiUrl = 'https://liga.aixtraball.de/pinball';
+  private addApiUrl = 'https://backend.aixplay.aixtraball.de/pinball';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private pinballService: PinballService) {}
+
+  ngOnInit() {
+    this.loadExistingPinballs();
+  }
+
+  ionViewWillEnter() {
+    this.loadExistingPinballs(); // Force reload data when the page is about to be presented
+  }
+
+  loadExistingPinballs() {
+    this.pinballService.getPinballMachines().subscribe(
+      (pinballs) => {
+        this.existingPinballs = pinballs;
+      },
+      (error) => {
+        console.error('Failed to load existing pinball machines:', error);
+      }
+    );
+  }
 
   onSearchChange(event: any) {
     const query = event.target.value;
     if (query && query.length > 1) {
       this.searchMachines(query).subscribe(
         (results) => {
-          this.searchResults = results.map((machine: Machine) => ({ ...machine, added: false }));
+          this.searchResults = results.map((machine: Machine) => {
+            if (machine.shortname === 'N/A' || !machine.shortname) {
+              machine.shortname = this.generateRandomAbbreviation();
+            }
+            machine.added = this.isPinballAlreadyAdded(machine.shortname, machine.name);
+            return machine;
+          });
         },
         (error) => {
           console.error('Error fetching search results:', error);
@@ -77,18 +103,34 @@ export class PinballPage {
       abbreviation: machine.shortname || 'N/A',
       room: '1'
     };
-
+  
     this.http.post(this.addApiUrl, payload).subscribe(
       () => {
         machine.added = true;
         this.successMessage = `Successfully added ${machine.name}.`;
         this.errorMessage = '';
+  
+        // Add the newly added machine to the existingPinballs array
+        this.existingPinballs.push({ abbreviation: machine.shortname || 'N/A', long_name: machine.name, room: '1' });
+  
+        // Alternatively, reload the existing pinballs (if server consistency is critical)
+        // this.loadExistingPinballs();
       },
       (error) => {
         console.error('Failed to add machine:', error);
         this.errorMessage = `Failed to add ${machine.name}. Please try again later.`;
         this.successMessage = '';
       }
+    );
+  }
+  generateRandomAbbreviation(): string {
+    return Math.random().toString(36).substr(2, 3).toUpperCase(); // Generate a random 3-character string
+  }
+
+  isPinballAlreadyAdded(shortname: string, fullName: string): boolean {
+    return this.existingPinballs.some(pinball => 
+      (pinball.abbreviation.toLowerCase() === shortname.toLowerCase()) ||
+      (pinball.long_name.toLowerCase() === fullName.toLowerCase())
     );
   }
 }

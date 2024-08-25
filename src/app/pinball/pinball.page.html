@@ -26,15 +26,14 @@
         <p>Manufacture Date: {{ machine.manufacture_date | date:'mediumDate' }}</p>
       </ion-label>
       <ion-button
-        slot="end"
-        [disabled]="machine.added"
-        (click)="addMachine(machine)"
-        [ngClass]="{'add-button': !machine.added, 'disabled-button': machine.added}"
-        fill="solid"
-      >
-        <ion-icon name="add" class="plus-icon"></ion-icon>
-      </ion-button>
-    </ion-item>
+      slot="end"
+      [disabled]="machine.added"
+      (click)="addMachine(machine)"
+      [ngClass]="{'add-button': !machine.added, 'disabled-button': machine.added}"
+      fill="solid"
+    >
+      <ion-icon name="add" class="plus-icon"></ion-icon>
+    </ion-button>    </ion-item>
   </ion-list>
 
   <ion-card *ngIf="searchResults.length === 0 && searchTerm.length > 1">

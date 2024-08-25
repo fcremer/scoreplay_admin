@@ -26,6 +26,10 @@ export class PlayerPage implements OnInit {
     this.loadPlayers();
   }
 
+  ionViewWillEnter() {
+    this.loadPlayers(); // Force reload data when the page is about to be presented
+  }
+
   loadPlayers() {
     this.pinballService.getPlayers().subscribe(
       (players) => {
@@ -51,7 +55,6 @@ export class PlayerPage implements OnInit {
 
     this.pinballService.addPlayer(playerName, abbreviation, this.isGuest).subscribe(
       () => {
-        this.loadPlayers(); 
         this.successMessage = 'Player added successfully.';
         this.clearForm();
         this.loadPlayers();  // Reload the players after adding a new one
