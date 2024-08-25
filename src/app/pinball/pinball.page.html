@@ -70,8 +70,8 @@
             <p>Abbreviation: {{ pinball.abbreviation }}</p>
             <p>Room: {{ pinball.room }}</p>
           </ion-label>
-          <!-- Greyed-out trash button similar to the player page -->
-          <ion-button fill="clear" slot="end" color="medium" disabled>
+          <!-- Activated trash button to trigger the deletion confirmation -->
+          <ion-button fill="clear" slot="end" color="danger" (click)="confirmDeletePinball(pinball)">
             <ion-icon name="trash-outline"></ion-icon>
           </ion-button>
         </ion-item>
