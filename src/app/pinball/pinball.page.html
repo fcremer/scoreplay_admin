@@ -70,6 +70,10 @@
             <p>Abbreviation: {{ pinball.abbreviation }}</p>
             <p>Room: {{ pinball.room }}</p>
           </ion-label>
+          <!-- Greyed-out trash button similar to the player page -->
+          <ion-button fill="clear" slot="end" color="medium" disabled>
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
         </ion-item>
       </ion-list>
     </ion-card-content>
