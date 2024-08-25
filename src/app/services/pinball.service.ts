@@ -19,6 +19,8 @@ export interface Score {
 export interface Player {
   abbreviation: string;
   name: string;
+  guest?: boolean;  // Add the optional guest attribute
+
 }
 
 @Injectable({
@@ -65,14 +67,19 @@ export class PinballService {
     return this.http.get<Player[]>(`${this.baseUrl}/players`);
   }
 
+  deletePlayer(abbreviation: string): Observable<any> {
+    const url = `${this.baseUrl}/player/${abbreviation}`;
+    return this.http.delete(url);
+  }
+
   deleteScore(pinballAbbreviation: string, playerAbbreviation: string, scoreValue: number): Observable<any> {
     const url = `${this.baseUrl}/delete_score/${pinballAbbreviation}/${playerAbbreviation}/${scoreValue}`;
     return this.http.delete(url);
   }
 
-  addPlayer(name: string, abbreviation: string): Observable<any> {
+  addPlayer(name: string, abbreviation: string, guest: boolean = false): Observable<any> {
     const url = `${this.baseUrl}/player`;
-    const body = { name, abbreviation };
+    const body = { name, abbreviation, guest };
     return this.http.post(url, body);
   }
 }
