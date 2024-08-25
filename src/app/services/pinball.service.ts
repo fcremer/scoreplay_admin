@@ -19,6 +19,8 @@ export interface Score {
 export interface Player {
   abbreviation: string;
   name: string;
+  guest?: boolean;  // Add the optional guest attribute
+
 }
 
 @Injectable({
@@ -26,6 +28,7 @@ export interface Player {
 })
 export class PinballService {
   private baseUrl = 'https://backend.aixplay.aixtraball.de';
+//  private baseUrl = 'http://localhost:5000';
 
   constructor(private http: HttpClient) {}
 
@@ -70,9 +73,9 @@ export class PinballService {
     return this.http.delete(url);
   }
 
-  addPlayer(name: string, abbreviation: string): Observable<any> {
+  addPlayer(name: string, abbreviation: string, guest: boolean = false): Observable<any> {
     const url = `${this.baseUrl}/player`;
-    const body = { name, abbreviation };
+    const body = { name, abbreviation, guest };  // Include guest in the body
     return this.http.post(url, body);
   }
 }
