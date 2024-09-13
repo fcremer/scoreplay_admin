@@ -82,4 +82,10 @@ export class PinballService {
     const body = { name, abbreviation, guest };
     return this.http.post(url, body);
   }
+
+  toggleGuestStatus(playerAbbreviation: string): Observable<any> {
+    const url = `${this.baseUrl}/player/${playerAbbreviation}/toggle_guest_status`;
+    return this.http.put(url, {});
+  }
+  
 }
