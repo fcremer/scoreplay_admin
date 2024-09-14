@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PinballService, Player } from '../services/pinball.service';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-player',
@@ -19,7 +19,8 @@ export class PlayerPage implements OnInit {
 
   constructor(
     private pinballService: PinballService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private toastController: ToastController  // Added ToastController
   ) {}
 
   ngOnInit() {
@@ -34,7 +35,7 @@ export class PlayerPage implements OnInit {
     this.pinballService.getPlayers().subscribe(
       (players) => {
         this.players = players;
-        this.filteredPlayers = players;
+        this.filterPlayers();  // Apply filtering after loading
       },
       (error) => {
         console.error('Failed to load players:', error);
@@ -94,6 +95,31 @@ export class PlayerPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  async toggleGuestStatus(player: Player) {
+    // Call the service to toggle the guest status
+    this.pinballService.toggleGuestStatus(player.abbreviation).subscribe(
+      async () => {
+        // Update the player's guest status locally
+        player.guest = !player.guest;
+
+        // Show a toast message
+        const toast = await this.toastController.create({
+          message: `Guest status for ${player.name} updated to ${player.guest ? 'Guest' : 'Regular'}.`,
+          duration: 2000,
+          position: 'bottom'
+        });
+        toast.present();
+
+        // Reload the players to get the updated data (optional)
+        // this.loadPlayers();
+      },
+      (error) => {
+        console.error('Failed to toggle guest status:', error);
+        this.errorMessage = 'Failed to update guest status. Please try again later.';
+      }
+    );
   }
 
   generateAbbreviation(firstName: string, lastName: string): string {

@@ -10,13 +10,34 @@
 </ion-header>
 
 <ion-content>
-  <!-- Search Bar -->
-  <ion-searchbar
-    [(ngModel)]="searchTerm"
-    (ionInput)="filterPinballMachines()"
-    placeholder="Search Pinball Machines"
-    debounce="250">
-  </ion-searchbar>
+  <!-- Search Bar with Reset Icon -->
+  <ion-grid class="search-grid">
+    <ion-row>
+      <ion-col>
+        <ion-searchbar
+          [(ngModel)]="searchTerm"
+          (ionInput)="filterPinballMachines()"
+          placeholder="Search Pinball Machines or Players"
+          debounce="250">
+        </ion-searchbar>
+      </ion-col>
+      <ion-col size="auto" class="reset-button-col">
+        <ion-button fill="clear" (click)="resetFilters()">
+          <ion-icon slot="icon-only" name="refresh-circle"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Score Filter Toggle -->
+  <ion-segment [(ngModel)]="scoreFilter" (ionChange)="loadScores()" class="segment-margin">
+    <ion-segment-button value="latest">
+      <ion-label>Latest Scores</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="all">
+      <ion-label>All Scores</ion-label>
+    </ion-segment-button>
+  </ion-segment>
 
   <!-- Error Message Display -->
   <ion-card *ngIf="errorMessage">
@@ -26,11 +47,13 @@
   </ion-card>
 
   <!-- Waiting for Scores Message -->
-  <ion-card *ngIf="!errorMessage && filteredPinballMachines.length === 0" class="no-scores-message">
+  <ion-card
+    *ngIf="!errorMessage && filteredPinballMachines.length === 0"
+    class="no-scores-message">
     <ion-card-content>
       <div class="centered-content">
         <ion-icon name="sad-outline" class="sad-icon"></ion-icon>
-        <p>Waiting for scores</p>
+        <p>No scores available.</p>
       </div>
     </ion-card-content>
   </ion-card>
@@ -42,22 +65,24 @@
         <ion-card-title>{{ machine.long_name }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <ion-grid>
-          <ion-row>
-            <ion-col><strong>Player</strong></ion-col>
-            <ion-col><strong>Score</strong></ion-col>
-            <ion-col><strong>Action</strong></ion-col>
-          </ion-row>
-          <ion-row *ngFor="let score of scoresByMachine[machine.abbreviation]">
-            <ion-col>{{ getPlayerName(score.player_abbreviation) }}</ion-col>
-            <ion-col>{{ score.points | number }}</ion-col>
-            <ion-col>
-              <ion-button color="danger" (click)="confirmDelete(score)">
-                Delete
-              </ion-button>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
+        <ion-list>
+          <ion-item *ngFor="let score of scoresByMachine[machine.abbreviation]">
+            <ion-label>
+              <h2>{{ getPlayerName(score.player_abbreviation) }}</h2>
+              <p>{{ score.date | date }}</p>
+            </ion-label>
+            <ion-label class="score-column" slot="end">
+              <h2>{{ score.points | number }}</h2>
+            </ion-label>
+            <ion-button
+              slot="end"
+              color="danger"
+              fill="clear"
+              (click)="confirmDelete(score)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-list>
       </ion-card-content>
     </ion-card>
   </ng-container>

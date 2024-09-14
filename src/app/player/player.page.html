@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content>
-  <!-- Add Player Form - Keep this at the top -->
+  <!-- Add Player Form -->
   <ion-card>
     <ion-card-header>
       <ion-card-title>Add Player</ion-card-title>
@@ -65,14 +65,35 @@
 
   <!-- Player List -->
   <ion-list>
-    <ion-item *ngFor="let player of filteredPlayers">
-      <ion-label>
-        {{ player.name }}
-        <ion-note *ngIf="player.guest" color="medium"> (Guest)</ion-note>
-      </ion-label>
-      <ion-button fill="clear" slot="end" color="danger" (click)="deletePlayer(player.abbreviation)">
-        <ion-icon name="trash-outline"></ion-icon>
-      </ion-button>
-    </ion-item>
+    <ion-item-sliding *ngFor="let player of filteredPlayers">
+      <ion-item>
+        <ion-label>
+          {{ player.name }}
+          <ion-note *ngIf="player.guest" color="medium"> (Guest)</ion-note>
+        </ion-label>
+        <!-- Toggle Guest Status Button -->
+        <ion-button fill="clear" slot="end" (click)="toggleGuestStatus(player)">
+          <ion-icon
+            [name]="player.guest ? 'person' : 'person-outline'"
+            slot="icon-only"
+          ></ion-icon>
+        </ion-button>
+        <!-- Delete Player Button -->
+        <ion-button fill="clear" slot="end" color="danger" (click)="deletePlayer(player.abbreviation)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+      <!-- Optional: Add a side menu for sliding options -->
+      <!--
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="toggleGuestStatus(player)">
+          Toggle Guest
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deletePlayer(player.abbreviation)">
+          Delete
+        </ion-item-option>
+      </ion-item-options>
+      -->
+    </ion-item-sliding>
   </ion-list>
 </ion-content>
