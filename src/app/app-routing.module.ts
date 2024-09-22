@@ -17,6 +17,10 @@ const routes: Routes = [
   {
     path: 'pinball',
     loadChildren: () => import('./pinball/pinball.module').then( m => m.PinballPageModule)
+  },
+  {
+    path: 'settings',
+    loadChildren: () => import('./settings/settings.module').then( m => m.SettingsPageModule)
   }
 ];
 @NgModule({

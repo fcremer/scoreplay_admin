@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Settings</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header>
+      Active Tournament: <strong>{{ activeTournament }}</strong>
+    </ion-list-header>
+
+    <ion-item-divider color="light">
+      Tournaments
+    </ion-item-divider>
+
+    <ion-item *ngFor="let tournament of tournaments">
+      <ion-label>{{ tournament }}</ion-label>
+      <ion-button slot="end" (click)="setActiveTournament(tournament)">
+        Set Active
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="full" (click)="createTournament()">
+    Create New Tournament
+  </ion-button>
+</ion-content>
