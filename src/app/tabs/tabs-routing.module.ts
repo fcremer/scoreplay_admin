@@ -19,6 +19,11 @@ const routes: Routes = [
         path: 'pinball',
         loadChildren: () => import('../pinball/pinball.module').then(m => m.PinballPageModule)
       },
+      // New Settings Route
+      {
+        path: 'settings',
+        loadChildren: () => import('../settings/settings.module').then(m => m.SettingsPageModule)
+      },
       {
         path: '',
         redirectTo: '/tabs/scores',
